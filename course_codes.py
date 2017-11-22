@@ -1,27 +1,17 @@
-import requests, json, pandas
+import requests
 import bs4 as bs
 
 payload = {
-    "-Maxrecords": "600",
-    "-Operator": "equals",
+    "-Maxrecords": "2500",
     "kp_programkod": "",
-    "-Operator": "equals",
-    "kp_institution": "IDA",
-    "-Operator": "equals",
+    "kp_institution": "",
     "kp_termin_ber": "",
-    "-Operator": "bw",
     "kp_period_ber": "",
-    "-Operator": "eq",
     "kp_schemablock": "",
-    "-Operator": "cn",
     "kp_huvudomrade_sv": "",
-    "-Operator": "eq",
-    "kp_utb_niva": "G1",
-    "-Op": "cn",
+    "kp_utb_niva": "G2",
     "kp_kurskod": "",
-    "-Op": "cn",
     "kp_kursnamn_sv": "",
-    "-Op": "cn",
     "kp_kursinnehall_sv": "",
     "-Search": "S%C3%B6k",
 }
@@ -56,32 +46,51 @@ institutions = {
 
 levels = {"G1", "G2", "A"}
 
-def get_course_codes(institution, level):
+def get_course_codes(level):
 
-    payload["kp_institution"] = institution
+#    payload["kp_institution"] = institution
     payload["kp_utb_niva"] = level
 
     res = requests.post(url="http://kdb-5.liu.se/liu/lith/studiehandboken/search_17/search_response_sv.lasso", data=payload)
-
     soup = bs.BeautifulSoup(res.text, "lxml")
 
     table = soup.find("table")
     table_rows = table.find_all("tr")
 
     rows = []
+    course_codes = []
     for tr in table_rows:
         td = tr.find_all("td")
         rows.append([i.text for i in td])
+        row = [i.text for i in td]
+        if len(row) == 4 and row[1] != '\xa0':
+            course_codes.append(row[1])
 
-    courses = []
-    [courses.append(row) for row in rows if len(row) == 4]
-
-    course_codes = []
-    [course_codes.append(code[1]) for code in courses if code[1] != '\xa0']
-
-    print(course_codes)
+    print("** Gathered {} course codes **".format(len(course_codes)))
 
     return course_codes
 
-# example
-IDA_advanced_courses = get_course_codes("IDA", "A")
+
+# all_course_codes = {}
+# for institution in institutions:
+#     for level in levels:
+#         courses = get_course_codes(institution, level)
+#         if len(courses) != 0:
+#             all_course_codes[institution] = {level: courses}
+
+# total = 0
+# for inst, levs in all_course_codes.items():
+#     print("***** INSTITUTION: {}".format(inst))
+#     for lev, courses in levs.items():
+#         print("***** LEVEL: {}\n{}\n\n".format(lev, courses))
+#         total += len(courses)
+
+all_ccs = []
+total = 0
+for lev in levels:
+    courses = get_course_codes(lev)
+    all_ccs.append(courses)
+    total += len(courses)
+
+
+print("DONE! Gathered {} course codes".format(total))

@@ -18,9 +18,17 @@ def un_maximize_windows():
 def shift_windows():
     w_data = [l.split() for l in get("wmctrl -lG").splitlines()]
     for w in w_data:
-        command = "wmctrl -ir " + w[0] + " -e 0,1920,0,800,600"
+        command = "wmctrl -ir " + w[0] + " -e 0,600,600,800,600"
         subprocess.Popen(["/bin/bash", "-c", command])
-        
+
+def maximize_windows():
+    w_data = [l.split() for l in get("wmctrl -lG").splitlines()]
+    for w in w_data:
+        if ("max@home" not in w[7]):
+            command = "wmctrl -ir " + w[0] + " -b add,maximized_vert,maximized_horz"
+            print("maximize: ", w)
+            subprocess.Popen(["/bin/bash", "-c", command])
 
 un_maximize_windows()
 shift_windows()
+maximize_windows()

@@ -106,7 +106,12 @@
 ;(add-hook 'c++-mode-hook (lambda ()(c-toggle-auto-newline 1)))
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(load-theme 'material t) 
+(load-theme 'material t)
+(elpy-enable)
+
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 (provide '.emacs)
 ;;; .emacs ends here

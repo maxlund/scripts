@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (wombat)))
+ ;'(custom-enabled-themes (quote (wombat)))
  '(inhibit-startup-screen t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -43,32 +43,50 @@
 (setq display-time-day-and-date t)  ; Visa tid och datum...
 (setq display-time-24hr-format t)   ; ...så att man fattar.
 (display-time)                      ; Visa tiden formaterad enligt ovan.
-
-
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-
 (global-linum-mode 1)
+(global-set-key (kbd "C-z") 'undo)
+
 
 ; start package.el with emacs
 (require 'package)
 
 ; add MELPA to repository list
 (add-to-list 'package-archives
-             '("MELPA" . "https://melpa.org/packages/"))
+             '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
 ; initialize package.el
 (package-initialize)
 
-; start auto-complete with emacs
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; (defvar myPackages
+;;   '(better-defaults
+;;     material-theme
+;;     auto-complete
+;;     yasnippet
+;;     iedit
+;;     rainbow-delimiters))
+
+;; (mapc #'(lambda (package)
+;;     (unless (package-installed-p package)
+;;       (package-install package)))
+;;       myPackages)
+
+; start these packages with emacs
 (require 'auto-complete)
 ; do default config for auto-complete
 (require 'auto-complete-config)
 (ac-config-default)
-
-; start yasnippet with emacs
 (require 'yasnippet)
 (yas-global-mode 1)
-
 (require 'iedit)
+(require 'rainbow-delimiters)
+(require 'better-defaults)
+(require 'rainbow-mode)
+
 
 ; a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
 (defun my:ac-c-header-init ()
@@ -86,6 +104,9 @@
 (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))
 (add-hook 'c++-mode-hook (lambda () (setq flycheck-clang-language-standard "c++17")))
 ;(add-hook 'c++-mode-hook (lambda ()(c-toggle-auto-newline 1)))
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(load-theme 'material t) 
 
 (provide '.emacs)
 ;;; .emacs ends here

@@ -45,8 +45,42 @@
 (display-time)                      ; Visa tiden formaterad enligt ovan.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (global-linum-mode 1)
+ ; rebind undo
 (global-set-key (kbd "C-z") 'undo)
+ ; rebind paste
+(global-set-key (kbd "C-q") 'clipboard-yank)
 
+; function to copy whole line if no region is marked
+(defun my-kill-ring-save (beg end flash)
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end) nil)
+                 (list (line-beginning-position)
+                       (line-beginning-position 2) 'flash)))
+  (kill-ring-save beg end)
+  (when flash
+    (save-excursion
+      (if (equal (current-column) 0)
+          (goto-char end)
+        (goto-char beg))
+      (sit-for blink-matching-delay))))
+; bind to default copy keybind
+(global-set-key [remap kill-ring-save] 'my-kill-ring-save)
+
+; function to cut whole line if no region is marked
+(defun my-kill-ring-cut (beg end flash)
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end) nil)
+                 (list (line-beginning-position)
+                       (line-beginning-position 2) 'flash)))
+  (kill-region beg end)
+  (when flash
+    (save-excursion
+      (if (equal (current-column) 0)
+          (goto-char end)
+        (goto-char beg))
+      (sit-for blink-matching-delay))))
+; bind to default cut keybind
+(global-set-key [remap kill-region] 'my-kill-ring-cut)
 
 ; start package.el with emacs
 (require 'package)
@@ -54,6 +88,7 @@
 ; add MELPA to repository list
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
+; add marmalade to repo list
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 ; initialize package.el
@@ -80,8 +115,8 @@
 ; do default config for auto-complete
 (require 'auto-complete-config)
 (ac-config-default)
-(require 'yasnippet)
-(yas-global-mode 1)
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
 (require 'iedit)
 (require 'rainbow-delimiters)
 (require 'better-defaults)

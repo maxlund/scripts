@@ -1,38 +1,3 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;'(custom-enabled-themes (quote (wombat)))
- '(inhibit-startup-screen t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-;; Bra indrag.
-;;(setq c-default-style "stroustrup")
-;; Vissa föredrar denna ...
-(setq c-default-style "ellemtel")
-
-;; Bra tangentbindningar: F4 tar bort/fram menylisten:
-(global-set-key [f4] 'menu-bar-mode)
-;  F5 ändrar "line-wrap".
-(global-set-key [f5] 'toggle-truncate-lines)
-;; Emacs21-specifikt.
-;; Tar bort "skräp".
-(if (string-match "^21" emacs-version)
-        (progn
-          (tool-bar-mode -1)
-          (blink-cursor-mode -1)))
-
-;; Framhäv markerat område genom invertering.
-(transient-mark-mode t)
-
-;; Markera matchande parenteser.
-(show-paren-mode 1)
 
 ;; Diverse bra saker
 (setq next-line-add-newlines nil)   ; Lägg inte till nya rader efter EOF.
@@ -43,12 +8,14 @@
 (setq display-time-day-and-date t)  ; Visa tid och datum...
 (setq display-time-24hr-format t)   ; ...så att man fattar.
 (display-time)                      ; Visa tiden formaterad enligt ovan.
+(setq neo-theme 'icons)             ; set icons to filetree
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (global-linum-mode 1)
- ; rebind undo
-(global-set-key (kbd "C-z") 'undo)
- ; rebind paste
-(global-set-key (kbd "C-q") 'clipboard-yank)
+
+
+
+(global-set-key (kbd "C-z") 'undo)  ; rebind undo
+(global-set-key (kbd "C-q") 'clipboard-yank)  ; rebind paste
 
 ; function to copy whole line if no region is marked
 (defun my-kill-ring-save (beg end flash)
@@ -121,7 +88,11 @@
 (require 'rainbow-delimiters)
 (require 'better-defaults)
 (require 'rainbow-mode)
-
+(require 'neotree)
+(require 'all-the-icons)
+(require 'material-theme)
+;; remember to install the fonts for icons:
+;; M-x all-the-icons-install-fonts
 
 ; a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
 (defun my:ac-c-header-init ()
@@ -133,7 +104,6 @@
 ; call this function from c/c++ hooks
 (add-hook 'c++-mode-hook 'my:ac-c-header-init)
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
-
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++17")))

@@ -1,4 +1,21 @@
+(setq c-default-style "ellemtel")
 
+; toggle menu
+(global-set-key [f4] 'menu-bar-mode)
+;  F5 change "line-wrap".
+(global-set-key [f5] 'toggle-truncate-lines)
+;; Emacs21-specifikt.
+;; remove junk
+(if (string-match "^21" emacs-version)
+        (progn
+          (tool-bar-mode -1)
+          (blink-cursor-mode -1)))
+
+;; Framhäv markerat område genom invertering.
+(transient-mark-mode t)
+
+;; Markera matchande parenteser.
+(show-paren-mode 1)
 ;; Diverse bra saker
 (setq next-line-add-newlines nil)   ; Lägg inte till nya rader efter EOF.
 (setq line-number-mode t)           ; Visa radnummer...
@@ -11,7 +28,7 @@
 (setq neo-theme 'icons)             ; set icons to filetree
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (global-linum-mode 1)
-
+(setq inhibit-startup-screen t)
 
 
 (global-set-key (kbd "C-z") 'undo)  ; rebind undo
@@ -64,18 +81,20 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-;; (defvar myPackages
-;;   '(better-defaults
-;;     material-theme
-;;     auto-complete
-;;     yasnippet
-;;     iedit
-;;     rainbow-delimiters))
+(defvar myPackages
+  '(better-defaults
+    material-theme
+    auto-complete
+    yasnippet
+    iedit
+    rainbow-delimiters
+    neotree
+    all-the-icons))
 
-;; (mapc #'(lambda (package)
-;;     (unless (package-installed-p package)
-;;       (package-install package)))
-;;       myPackages)
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
 
 ; start these packages with emacs
 (require 'auto-complete)

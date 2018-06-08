@@ -8,12 +8,12 @@ names = []
 count = 0
 
 for line in fileinput.input():
-    if (count == 0):
+    if not count:
         names = line.split()
-        voltage = [[] for i in range(len(names))]
+        voltage, currents = [[] for i in range(len(names))]
         currents = [[] for i in range(len(names))]
-    elif (count >= 2):
-        line = line.split();
+    elif count > 1:
+        line = line.split()
         for i in range(0, len(names)):
             voltage[i].append(line[i*2])
             currents[i].append(line[(i*2)+1])

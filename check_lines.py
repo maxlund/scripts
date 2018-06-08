@@ -18,13 +18,13 @@ def main(argv):
             line_counter += 1
             char_counter = -1
             for char in line:
-                if (char != " " or not initial_whitespaces):
+                if char != " " or not initial_whitespaces:
                     char_counter += 1
                     initial_whitespaces = False
 
-            if (char_counter >= 80):
+            if char_counter >= 80:
                 print('{} @ line {} has {} characters'.format(name, line_counter, char_counter)) 
-                f.close()
+        f.close()
 
 if __name__ == "__main__":
     main(sys.argv[1])

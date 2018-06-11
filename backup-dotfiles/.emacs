@@ -1,5 +1,6 @@
 (setq c-default-style "ellemtel")
 
+(global-set-key [f8] 'neotree-toggle)
 ; toggle menu
 (global-set-key [f4] 'menu-bar-mode)
 ;  F5 change "line-wrap".

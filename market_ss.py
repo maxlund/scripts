@@ -1,21 +1,17 @@
 import pickle
-import pyscreenshot as ps
 import numpy as np
-from skimage import io
 import mss
 import mss.tools
 
 def to_binary_colors(mat):
     # take top left corner as the "0" color, others as "1"
     target = mat[0]
-    bin_mat = [0 if x == target else 1 for x in mat]
+    bin_mat = np.where(mat == target, 0 , 1)
     return bin_mat
 
 def get_binary_matrixes(upper_arr, lower_arr):
-    upper = to_binary_colors(upper_arr)
-    lower = to_binary_colors(lower_arr)
-    mat_u = np.array([upper[i*77:(i+1)*77] for i in range(14)])
-    mat_l = np.array([lower[i*77:(i+1)*77] for i in range(14)])
+    mat_u = to_binary_colors(upper_arr).reshape(14, 77)
+    mat_l = to_binary_colors(lower_arr).reshape(14, 77)
     return mat_u, mat_l
 
 def get_number(mat, digits_dict):

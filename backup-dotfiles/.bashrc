@@ -91,11 +91,40 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+
+# ******* git stuff *******
+# **************************************************************************************
 alias gs='git status'
+alias gl='git log'
+alias gd='git diff'
+alias gg='git gui'
+alias glist='git stash list'
+
+gapply() {
+    git stash apply stash@{$1}
+}
+
+gpop() {
+    git stash pop stash@{$1}
+}
+
+gcheck() {
+    git branch | grep "$1" | xargs git checkout
+}
+
+gadd() {
+    git add $(cut -d ":" -f2 <<< $(gs | grep "$1"))
+}
+
+gunstage() {
+    git restore --staged $(cut -d ":" -f2 <<< $(gs | grep "$1"))
+}
+
+grestore() {
+    git restore $(cut -d ":" -f2 <<< $(gs | grep "$1"))
+}
+
+export PS1='\[\033[0;32m\]\[\033[0m\033[0;32m\]\u\[\033[0;36m\] @ \[\033[0;36m\]\h \w\[\033[0;32m\]$(__git_ps1)\n\[\033[0;32m\]└─\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] ▶\[\033[0m\] '
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

@@ -126,6 +126,12 @@ grestore() {
 
 export PS1='\[\033[0;32m\]\[\033[0m\033[0;32m\]\u\[\033[0;36m\] @ \[\033[0;36m\]\h \w\[\033[0;32m\]$(__git_ps1)\n\[\033[0;32m\]└─\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] ▶\[\033[0m\] '
 
+set-terminal-title() {
+    host=$1
+    PROMPT_COMMAND='echo -en "\033]0;$host\a"'
+    eval $PROMPT_COMMAND
+}
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -152,6 +158,16 @@ alias extend-display="xrandr --output HDMI-A-0 --same-as DisplayPort-0;sleep 1;p
 alias mirror-display="xrandr --output HDMI-A-0 --same-as DisplayPort-0;"
 
 alias veromix="cd ~/Downloads/veromix/gtk && ./main.py"
+
+shopt -s histappend
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+HISTIGNORE='ls -al:bg:fg:history'
+export HISTTIMEFORMAT="%h %d %H:%M:%S "
+shopt -s histappend
+shopt -s cmdhist
+PROMPT_COMMAND='history -a'
+export HISTCONTROL=ignorespace:erasedups
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases

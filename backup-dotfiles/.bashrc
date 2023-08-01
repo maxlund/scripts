@@ -124,12 +124,46 @@ grestore() {
     git restore $(cut -d ":" -f2 <<< $(gs | grep "$1"))
 }
 
+# **************************************************************************************
+
 export PS1='\[\033[0;32m\]\[\033[0m\033[0;32m\]\u\[\033[0;36m\] @ \[\033[0;36m\]\h \w\[\033[0;32m\]$(__git_ps1)\n\[\033[0;32m\]└─\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] ▶\[\033[0m\] '
 
 set-terminal-title() {
     host=$1
     PROMPT_COMMAND='echo -en "\033]0;$host\a"'
     eval $PROMPT_COMMAND
+}
+
+maddr() {
+    declare -a interface_names=()
+
+    # Find all active interface names (excluding loopback)
+    while IFS= read -r line; do
+        interface_name=$(echo "$line" | awk -F': ' '{print $2}' | cut -d '@' -f1)
+        if [ "$interface_name" != "lo" ]; then
+            interface_names+=("$interface_name")
+        fi
+    done < <(ip -o link show up)
+
+    echo "--------------------------"
+    echo "   IP Address Info"
+    echo "--------------------------"
+
+    for interface in "${interface_names[@]}"; do
+        local_ip=$(ip -4 addr show "$interface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1')
+
+        if [ -z "$local_ip" ]; then
+            echo "No IP address assigned to $interface"
+        else
+            echo "$interface Interface:"
+            echo "$local_ip"
+            echo ""
+        fi
+    done
+
+    global_ip=$(curl -s https://api64.ipify.org?format=text)
+    echo "Global IP: $global_ip"
+    echo "--------------------------"
 }
 
 # Add an "alert" alias for long running commands.  Use like so:
